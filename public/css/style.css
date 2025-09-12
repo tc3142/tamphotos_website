@@ -1,0 +1,256 @@
+/* Base reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: #fff;
+  background: #000;
+}
+
+
+/* Fullscreen background image (no animation) */
+.bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  /* no transitions here */
+}
+
+/* Ensure UI sits above the background */
+.topbar, .overlay, .bottom-cta {
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== Top bar ===== */
+.topbar {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  padding: 28px 32px;
+}
+
+.brand {
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+/* nav top-right */
+.mainnav {
+  display: flex;
+  gap: clamp(18px, 3vw, 36px);
+  align-items: center;
+}
+
+.navlink {
+  color: #fff;
+  text-decoration: none;
+  font-size: clamp(16px, 1.7vw, 20px);
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.navlink::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+
+.navlink:hover::after,
+.navlink:focus-visible::after { transform: scaleX(1); }
+
+/* ===== Bottom-centered socials button ===== */
+.bottom-cta {
+  position: fixed;
+  left: 50%;
+  bottom: 7vh;
+  transform: translateX(-50%);
+}
+
+.socials-btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: .03em;
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(2px);
+  transition: transform .12s ease, background .25s ease, border-color .25s ease;
+}
+
+.socials-btn:hover { transform: translateY(-2px); background: rgba(255,255,255,.1); border-color: #fff; }
+
+/* Small screens: stack nicely */
+@media (max-width: 720px) {
+  .topbar { grid-template-columns: 1fr; row-gap: 14px; }
+  .mainnav { justify-content: flex-start; flex-wrap: wrap; }
+}
+
+/* ==== Socials dropdown (no flicker) ==== */
+.socials-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+/* Menu is *attached* to the button: bottom:100% removes the gap */
+.socials-menu {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%) translateY(-8px); /* small visual offset upward */
+  background: rgba(0,0,0,0.85);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 160px;
+  z-index: 999;
+
+  /* Hidden state (but still takes hover) */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .18s ease, visibility .18s ease, transform .18s ease;
+}
+
+/* Show menu when hovering the wrapper OR focusing inside it */
+.socials-wrap:hover .socials-menu,
+.socials-wrap:focus-within .socials-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.socials-menu a {
+  display: block;
+  margin: 6px 0;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.socials-menu a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Singles/Projects alternating offset ===== */
+.singles-stack, .projects-stack {
+  padding: min(6vh, 60px) 6vw 10vh;
+}
+
+.single {
+  margin: 10vh 0;
+  display: flex;
+  justify-content: center; /* default center; overridden below */
+}
+
+.single img {
+  max-width: min(80vw, 1100px);
+  max-height: 75vh;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+}
+
+/* Alternate: 1st left, 2nd right, 3rd left, 4th right ... */
+.single:nth-child(odd)  { justify-content: flex-start; padding-left: 2vw; }
+.single:nth-child(even) { justify-content: flex-end;  padding-right: 2vw; }
+
+@media (max-width: 720px) {
+  .single { margin: 7vh 0; }
+  .single img { max-width: 92vw; max-height: 65vh; }
+}
+
+
+/* Inner pages (no brand) */
+.topbar--inner {
+  grid-template-columns: 1fr;
+  justify-items: end;       /* keep nav on the right like home */
+  padding-top: 28px;
+  padding-right: 32px;
+}
+
+/* Active page indicator */
+.navlink.active::after {
+  transform: scaleX(1);
+}
+
+.mainnav a:first-child {
+  margin-right: 2vw;
+}
+
+
+/* ===== Projects list ===== */
+.projects-list {
+  padding: min(6vh, 60px) 6vw 10vh;
+}
+
+.page-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.projects-list ul {
+  list-style: none;
+  padding: 0;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.projects-list li {
+  margin: 1rem 0;
+}
+
+.projects-list a {
+  display: block;
+  padding: 1rem 1.2rem;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.projects-list a:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-3px);
+}
+
+/* Portrait images: give them more breathing room */
+.single img.portrait {
+  max-width: 55vw;     /* make them wider */
+  max-height: 85vh;    /* allow a bit taller */
+}
+
+/* Keep page content above any fixed backgrounds (e.g., .bg) */
+main, .contact-wrap {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ensure gallery sits above any fixed backgrounds */
+.singles-stack { position: relative; z-index: 2; }
+.single img { display: block; opacity: 1; visibility: visible; }
+
+/* Final color overrides */
+body { color: #fff; }
+.brand { color: #fff; } /* your name in the top-left */

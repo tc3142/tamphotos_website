@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact — abcphoto</title>
+
+  <!-- Use your global stylesheet -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="icon" href="data:,"> <!-- optional to silence favicon 404 -->
+
+
+  <!-- Safety: ensure this page's content sits above any fixed backgrounds -->
+  <style>
+    .overlay { position: relative; z-index: 2; }
+    .contact-wrap { position: relative; z-index: 2; }
+    /* optional: give this page its own dark backdrop (helps if no bg image) */
+    body { background:#000; }
+  </style>
+</head>
+<body>
+  <!-- Do NOT put the homepage background <img id="bg" class="bg"> on this page -->
+
+  <div class="overlay">
+    <header class="topbar topbar--inner">
+      <nav class="mainnav" aria-label="Primary">
+        <a href="index.html" class="navlink">home</a>
+        <a href="singles.html" class="navlink">stills</a>
+        <a href="projects.html" class="navlink">projects</a>
+        <a href="about.html" class="navlink">about</a>
+        <a href="contact.html" class="navlink active">contact</a>
+      </nav>
+    </header>
+
+    <main class="contact-wrap" style="max-width:640px;margin:12vh auto;padding:0 6vw;">
+      <h1 style="text-align:center;margin-bottom:1.5rem;">Contact</h1>
+      <form id="contact-form" novalidate>
+        <div class="row" style="margin:12px 0;">
+          <input type="text" name="name" placeholder="Your name"
+            style="width:100%;padding:12px 14px;border-radius:10px;border:2px solid #fff;background:rgba(0,0,0,.25);color:#fff;">
+        </div>
+        <div class="row" style="margin:12px 0;">
+          <textarea name="message" placeholder="Your message" required
+            style="width:100%;min-height:160px;resize:vertical;padding:12px 14px;border-radius:10px;border:2px solid #fff;background:rgba(0,0,0,.25);color:#fff;"></textarea>
+        </div>
+        <button type="submit"
+          style="width:100%;padding:12px 14px;border-radius:10px;border:2px solid #fff;background:rgba(0,0,0,.25);color:#fff;font-weight:700;cursor:pointer;">
+          Send
+        </button>
+        <p id="contact-status" class="status" aria-live="polite" style="text-align:center;margin-top:10px;"></p>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const payload = Object.fromEntries(fd.entries());
+      const res = await fetch('/api/contact', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const status = document.getElementById('contact-status');
+      if (res.ok) { status.textContent = 'Thanks! Your message was sent.'; e.target.reset(); }
+      else {
+        const err = await res.json().catch(()=>({}));
+        status.textContent = 'Sorry, something went wrong: ' + (err.detail || res.status);
+      }
+    });
+  </script>
+</body>
+</html>
